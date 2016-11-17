@@ -129,6 +129,14 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\NeuralLink.h" />
+    <ClInclude Include="..\..\..\include\Neuron.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\NeuralLink.cpp" />
+    <ClCompile Include="..\..\..\src\Neuron.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
