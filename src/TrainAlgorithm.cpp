@@ -87,7 +87,7 @@ void Backpropagation::WeightsInitialization()
 
 Backpropagation::Backpropagation(NeuralNetwork* _neuralNetwork)
 {
-	neuralNetwork = neuralNetwork;
+	neuralNetwork = _neuralNetwork;
 }
 
 double Backpropagation::Train(const std::vector<double>& data, const std::vector<double>& target)

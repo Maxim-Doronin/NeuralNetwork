@@ -1,7 +1,7 @@
 #include "NeuralNetwork.h"
 
-NeuralNetwork::NeuralNetwork(const int& _inputs, const int& _outputs, const int& _numOfHiddenLayers = 0,
-			const int& _hidden = 0, const char* type = "MultiLayerPerceptron")
+NeuralNetwork::NeuralNetwork(const int& _inputs, const int& _outputs, const int& _numOfHiddenLayers,
+			const int& _hidden, const char* type)
 {
 	if (_inputs < 0 || _outputs < 0)
 		std::cout << "Error in Neural Network constructor: The number of input and output neurons has to be more than 0!\n"; 

@@ -22,7 +22,7 @@ public:
 
 	virtual std::vector<NeuralLink*>&	GetInputLinks()		{ return inputs; }
 	virtual std::vector<NeuralLink*>&	GetOutputLinks()	{ return outputs; }
-	virtual NeuralLink*	at(const int& indexOfNeuralLink)	{ outputs[indexOfNeuralLink]; }
+	virtual NeuralLink*	at(const int& indexOfNeuralLink)	{ return outputs[indexOfNeuralLink]; }
 
 	virtual void SetInputLink(NeuralLink* newNeuralLink)	{ inputs.push_back(newNeuralLink); }
 	virtual void SetOutputLink(NeuralLink* newNeuralLink)	{ outputs.push_back(newNeuralLink); }
