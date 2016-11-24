@@ -135,12 +135,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\Function.h" />
+    <ClInclude Include="..\..\..\include\NeuralFactory.h" />
     <ClInclude Include="..\..\..\include\NeuralLink.h" />
+    <ClInclude Include="..\..\..\include\NeuralNetwork.h" />
     <ClInclude Include="..\..\..\include\Neuron.h" />
+    <ClInclude Include="..\..\..\include\TrainAlgorithm.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\NeuralLink.cpp" />
+    <ClCompile Include="..\..\..\src\NeuralNetwork.cpp" />
     <ClCompile Include="..\..\..\src\Neuron.cpp" />
+    <ClCompile Include="..\..\..\src\TrainAlgorithm.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
