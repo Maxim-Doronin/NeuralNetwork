@@ -51,11 +51,11 @@ double OutputNeuron::Activation() {
 	return output;
 }
 
-double OutputNeuron::TrainNeuron(double inTarget)
+double OutputNeuron::TrainNeuron(double target)
 {
 	double res;
-	double error = (inTarget - outputSum) *neuron->Derivative();
-	res = pow(inTarget - outputSum, 2);
+	double error = (target - outputSum) *neuron->Derivative();
+	res = pow(target - outputSum, 2);
 
 	for (int i = 0; i < (this->GetInputLinks()).size(); i++) {
 		NeuralLink * inputLink = (this->GetInputLinks()).at(i);
@@ -101,7 +101,7 @@ double HiddenNeuron::Activation()
 	return neuron->GetTotalSum();
 }
 
-double HiddenNeuron::PerformTrainingProcess(double inTarget)
+double HiddenNeuron::TrainNeuron(double target)
 {
 	double deltaInputs = 0;
 	for (int i = 0; i < (this->GetNumOfOutputLinks()); i++) {
@@ -125,7 +125,7 @@ double HiddenNeuron::PerformTrainingProcess(double inTarget)
 	return 0;
 }
 
-void HiddenNeuron::PerformWeightsUpdating()
+void HiddenNeuron::WeightsUpdate()
 {
 	for (int i = 0; i < (this->GetInputLinks()).size(); i++) {
 		NeuralLink* inputLink = (this->GetInputLinks()).at(i);

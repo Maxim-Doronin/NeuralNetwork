@@ -36,7 +36,7 @@ public:
 	virtual double	Process(double x)						{ return function->Process(x); }
 	virtual double	Derivative()							{ return function->Derivative(totalSum); }
 
-	virtual double	TrainNeuron(double inTarget)			{ return 0; }
+	virtual double	TrainNeuron(double target)				{ return 0; }
 	virtual void	WeightsUpdate()							{ };
 	virtual void	GetStatus();
 };
@@ -59,16 +59,16 @@ public:
 	virtual void SetInputLink(NeuralLink* newNeuralLink)	{ neuron->SetInputLink(newNeuralLink); };
 	virtual void SetOutputLink(NeuralLink* newNeuralLink)	{ neuron->SetOutputLink(newNeuralLink); };
 
-	virtual void	Input(double inInputData)				{ neuron->Input(inInputData); };
+	virtual void	Input(double inputData)					{ neuron->Input(inputData); };
 	virtual double	Activation();
 	virtual int		GetNumOfOutputLinks()					{ return neuron->GetNumOfOutputLinks(); };
 	virtual double	GetTotalSum()							{ return neuron->GetTotalSum(); };
 	virtual void	ResetTotalSum()							{ neuron->ResetTotalSum(); };
 	virtual double	Process()								{ return neuron->Process(); };
-	virtual double	Process(double inArg)					{ return neuron->Process(inArg); };
+	virtual double	Process(double x)						{ return neuron->Process(x); };
 	virtual double	Derivative()							{ return neuron->Derivative(); };
 
-	virtual double	TrainNeuron(double inTarget);
+	virtual double	TrainNeuron(double target);
 	virtual void	WeightsUpdate();
 	virtual void	GetStatus()								{ neuron->GetStatus(); };
 };
@@ -91,16 +91,16 @@ public:
 	virtual void	SetInputLink(NeuralLink* newNeuralLink) { neuron->SetInputLink(newNeuralLink); };
 	virtual void	SetOutputLink(NeuralLink* newNeuralLink){ neuron->SetOutputLink(newNeuralLink); };
 
-	virtual void	Input(double inInputData)				{ neuron->Input(inInputData); };
+	virtual void	Input(double inputData)					{ neuron->Input(inputData); };
 	virtual double	Activation();
 	virtual int		GetNumOfOutputLinks()					{ return neuron->GetNumOfOutputLinks(); };
 	virtual double	GetTotalSum()							{ return neuron->GetTotalSum(); };
 	virtual void	ResetTotalSum()							{ neuron->ResetTotalSum(); };
 	virtual double	Process()								{ return neuron->Process(); };
-	virtual double	Process(double inArg)					{ return neuron->Process(inArg); };
+	virtual double	Process(double x)						{ return neuron->Process(x); };
 	virtual double	Derivative()							{ return neuron->Derivative(); };
 
-	virtual double	PerformTrainingProcess(double inTarget);
-	virtual void	PerformWeightsUpdating();
-	virtual void	ShowNeuronState()						{ neuron->GetStatus(); };
+	virtual double	TrainNeuron(double target);
+	virtual void	WeightsUpdate();
+	virtual void	GetStatus()								{ neuron->GetStatus(); };
 };
