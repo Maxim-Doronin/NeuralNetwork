@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 	vector<vector<double> > targetdata;
 	uchar tmp;
 	char buf[5000];
-	while (i < 15000) {
+	while (i < 10000) {
 		trainStream.getline(buf, 5000);
 		char *number = strtok(buf, ",");
 
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
 		if (net->GetNetResponse(test) == answer)
 			rightAnswers++;
 		int temp = answer;
-		cout << temp << endl;
+		//cout << temp << endl;
 		i++;
 	}
 	cout << "Rate " << rightAnswers / (float)i << endl;

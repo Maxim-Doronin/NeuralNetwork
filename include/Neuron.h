@@ -3,7 +3,7 @@
 #include "Function.h"
 #include "NeuralLink.h"
 
-const double LearningRate = 0.007;
+const double LearningRate = 0.01;
 class NeuralLink;
 
 class Neuron {
@@ -38,6 +38,7 @@ public:
 
 	virtual double	TrainNeuron(double target)				{ return 0; }
 	virtual void	WeightsUpdate()							{ };
+	virtual void	ShakeWeights()							{ };
 	virtual void	GetStatus();
 };
 
@@ -70,6 +71,7 @@ public:
 
 	virtual double	TrainNeuron(double target);
 	virtual void	WeightsUpdate();
+	virtual void	ShakeWeights();
 	virtual void	GetStatus()								{ neuron->GetStatus(); };
 };
 
@@ -102,5 +104,6 @@ public:
 
 	virtual double	TrainNeuron(double target);
 	virtual void	WeightsUpdate();
+	virtual void	ShakeWeights();
 	virtual void	GetStatus()								{ neuron->GetStatus(); };
 };

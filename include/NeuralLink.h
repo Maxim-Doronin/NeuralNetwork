@@ -17,6 +17,7 @@ public:
 	double	GetWeigthCorrection() const;
 
 	void	UpdateWeigth();
+	void	ShakeWeight();
 
 	void	SetLastTranslatedSignal(double inLastTranslatedSignal);
 	double	GetLastTranslatedSignal();

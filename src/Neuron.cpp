@@ -78,6 +78,13 @@ void OutputNeuron::WeightsUpdate()
 	}
 }
 
+void OutputNeuron::ShakeWeights() 
+{
+	for (int i = 0; i < (this->GetInputLinks()).size(); i++) {
+		NeuralLink* inputLink = (this->GetInputLinks()).at(i);
+		inputLink->ShakeWeight();
+	}
+}
 
 
 
@@ -130,5 +137,13 @@ void HiddenNeuron::WeightsUpdate()
 	for (int i = 0; i < (this->GetInputLinks()).size(); i++) {
 		NeuralLink* inputLink = (this->GetInputLinks()).at(i);
 		inputLink->UpdateWeigth();
+	}
+}
+
+void HiddenNeuron::ShakeWeights()
+{
+	for (int i = 0; i < (this->GetInputLinks()).size(); i++) {
+		NeuralLink* inputLink = (this->GetInputLinks()).at(i);
+		inputLink->ShakeWeight();
 	}
 }

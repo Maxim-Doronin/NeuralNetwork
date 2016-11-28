@@ -1,5 +1,9 @@
 #include "NeuralLink.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 NeuralLink::NeuralLink() {
 	weigth = 0.0;
 	neuronNext = 0;
@@ -38,6 +42,12 @@ double NeuralLink::GetWeigthCorrection() const {
 
 void NeuralLink::UpdateWeigth() {
 	weigth += weigthDelta;
+}
+
+void NeuralLink::ShakeWeight() {
+	srand((unsigned)time(0));
+	double offset = ((float)rand() / RAND_MAX) / 2 * weigth;
+	weigth += offset - weigth / 4;
 }
 
 void NeuralLink::SetLastTranslatedSignal(double inLastTranslatedSignal) {

@@ -32,6 +32,7 @@ protected:
 	std::vector<Neuron*>&	GetInputLayer()					{ return layers[0]; };
 	std::vector<Neuron*>& 	GetBiasLayer()					{ return biasLayer; };
 	void UpdateWeights();
+	void ShakeWeights();
 	void ResetSums();
 	void AddMSE(double localMSE)							{ meanSquaredError += localMSE; };
 	double	GetMSE()										{ return meanSquaredError; };

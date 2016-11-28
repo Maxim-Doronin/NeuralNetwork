@@ -77,10 +77,29 @@ bool NeuralNetwork::Train(const std::vector<std::vector<double> >& data, const s
 {
 	bool flag = true;
 	int iterations = 0;
+	double oldMSE = 11;
+	double newMSE;
+	int repeats = 0;;
 	while (flag && iterations < 3) {
 		iterations++;
 		std::cout << "--Start algorithm" << std::endl;
 		for (int i = 0; i < data.size(); i++) {
+			if (i % 100 == 0) {
+				newMSE = this->GetMSE();
+				std::cout << newMSE << std::endl;
+				if (fabs(oldMSE - newMSE) < 0.1) {
+					repeats++;
+					if (repeats >= 3) {
+						this->ShakeWeights();
+						std::cout << "shaked" << std::endl;
+						repeats = 0;
+					}
+				}
+				else
+					repeats = 0;
+				oldMSE = newMSE;
+				this->ResetMSE();
+			}
 			trainingAlgoritm->Train(data[i], target[i]);
 		}
 		
@@ -118,19 +137,19 @@ uchar NeuralNetwork::GetNetResponse(const std::vector<double>& inData)
 		}
 		double maxRes = -1;
 		int answer;
-		std::cout << "Net response is: { ";
+		//std::cout << "Net response is: { ";
 		for (int ioutput = 0; ioutput < outputs; ioutput++) {
 			double res = this->GetOutputLayer().at(ioutput)->Activation();
 			if (res > maxRes) {
 				maxRes = res;
 				answer = ioutput;
 			}
-			std::cout.precision(4);
-			std::cout.setf(std::ios::fixed);
-			std::cout << res << "\t";
-			netResponse.push_back(res);
+			//std::cout.precision(4);
+			//std::cout.setf(std::ios::fixed);
+			//std::cout << res << "\t";
+			//netResponse.push_back(res);
 		}
-		std::cout << "|| " << answer << " } ";
+		//std::cout << "|| " << answer << " } ";
 		this->ResetSums();
 		return answer;
 	}
@@ -151,6 +170,14 @@ void NeuralNetwork::UpdateWeights()
 	for (int idxOfLayer = 0; idxOfLayer < layers.size(); idxOfLayer++) {
 		for (int idxOfNeuron = 0; idxOfNeuron < layers[idxOfLayer].size(); idxOfNeuron++) {
 			layers[idxOfLayer].at(idxOfNeuron)->WeightsUpdate();
+		}
+	}
+}
+
+void NeuralNetwork::ShakeWeights() {
+	for (int idxOfLayer = 0; idxOfLayer < layers.size(); idxOfLayer++) {
+		for (int idxOfNeuron = 0; idxOfNeuron < layers[idxOfLayer].size(); idxOfNeuron++) {
+			layers[idxOfLayer].at(idxOfNeuron)->ShakeWeights();
 		}
 	}
 }
