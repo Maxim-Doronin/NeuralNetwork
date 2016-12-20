@@ -3,7 +3,7 @@
 #include "Function.h"
 #include "NeuralLink.h"
 
-const double LearningRate = 0.01;
+const double LearningRate = 0.001;
 class NeuralLink;
 
 class Neuron {
@@ -12,11 +12,12 @@ protected:
 	std::vector<NeuralLink*> outputs;
 	Function* function;
 	double totalSum;
+	double learningRate;
 
 public:
-	Neuron() : function(new Linear), totalSum(0.0) {};
-	Neuron(Function *_function) : function(_function), totalSum(0.0) {};
-	Neuron(std::vector<NeuralLink*>& _outputLinks, Function* _function) : function(_function), outputs(_outputLinks), totalSum(0.0) {};
+	Neuron() : function(new Linear), totalSum(0.0), learningRate(LearningRate) {};
+	Neuron(Function *_function) : function(_function), totalSum(0.0), learningRate(LearningRate) {};
+	Neuron(std::vector<NeuralLink*>& _outputLinks, Function* _function) : function(_function), outputs(_outputLinks), totalSum(0.0), learningRate(LearningRate) {};
 	Neuron(std::vector<Neuron *>& neuronsLinkTo, Function* _function);
 	virtual ~Neuron();
 
@@ -38,8 +39,10 @@ public:
 
 	virtual double	TrainNeuron(double target)				{ return 0; }
 	virtual void	WeightsUpdate()							{ };
+	virtual double	CalculateLearningRate(double target)	{ return 0.007; }
 	virtual void	ShakeWeights()							{ };
 	virtual void	GetStatus();
+	virtual double	GetLearningRate()						{ return learningRate; }
 };
 
 
@@ -71,8 +74,10 @@ public:
 
 	virtual double	TrainNeuron(double target);
 	virtual void	WeightsUpdate();
+	virtual double	CalculateLearningRate(double target);
 	virtual void	ShakeWeights();
 	virtual void	GetStatus()								{ neuron->GetStatus(); };
+	virtual double	GetLearningRate()						{ return neuron->GetLearningRate(); }
 };
 
 
@@ -104,6 +109,8 @@ public:
 
 	virtual double	TrainNeuron(double target);
 	virtual void	WeightsUpdate();
+	virtual double	CalculateLearningRate(double target);
 	virtual void	ShakeWeights();
 	virtual void	GetStatus()								{ neuron->GetStatus(); };
+	virtual double	GetLearningRate()						{ return neuron->GetLearningRate(); }
 };

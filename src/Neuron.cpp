@@ -1,9 +1,11 @@
 #include "Neuron.h"
 #include <iostream>
+#include <cmath>
 
 Neuron::Neuron(std::vector<Neuron *>& neuronsLinkTo, Function* _function) {
 	function = _function;
 	totalSum = 0.0;
+	learningRate = LearningRate;
 
 	for (int i = 0; i < neuronsLinkTo.size(); i++) {
 		NeuralLink *newLink = new NeuralLink(neuronsLinkTo[i], 0.0);
@@ -54,7 +56,8 @@ double OutputNeuron::Activation() {
 double OutputNeuron::TrainNeuron(double target)
 {
 	double res;
-	double error = (target - outputSum) *neuron->Derivative();
+	double error = (target - outputSum) * neuron->Derivative();
+	learningRate = CalculateLearningRate(target);
 	res = pow(target - outputSum, 2);
 
 	for (int i = 0; i < (this->GetInputLinks()).size(); i++) {
@@ -68,6 +71,25 @@ double OutputNeuron::TrainNeuron(double target)
 	}
 
 	return res;
+}
+
+double OutputNeuron::CalculateLearningRate(double target) {
+	double a = 0.0;
+	double b = 1000.0;
+	double eps = 0.0001;
+	double delta = 0.0001;
+
+	while ((b - a) / 2 >= eps) {
+		double lambda1 = (a + b - delta) / 2;
+		double lambda2 = (a + b + delta) / 2;
+		if (pow((target - Process(totalSum - lambda1 * Derivative())), 2) >
+			pow((target - Process(totalSum - lambda2 * Derivative())), 2))
+		//if (Process(totalSum - lambda1 * Derivative()) > Process(totalSum - lambda2 * Derivative()))
+			a = lambda1;
+		else
+			b = lambda2;
+	}
+	return (a + b) / 2;
 }
 
 void OutputNeuron::WeightsUpdate()
@@ -119,6 +141,7 @@ double HiddenNeuron::TrainNeuron(double target)
 	}
 
 	double errorj = deltaInputs * (this->Derivative());
+	learningRate = CalculateLearningRate(target);
 
 	for (int i = 0; i < (this->GetInputLinks()).size(); i++) {
 		NeuralLink* inputLink = (this->GetInputLinks()).at(i);
@@ -130,6 +153,25 @@ double HiddenNeuron::TrainNeuron(double target)
 		inputLink->SetErrorInFormationTerm(errorj);
 	}
 	return 0;
+}
+
+double HiddenNeuron::CalculateLearningRate(double target) {
+	double a = 0.0;
+	double b = 1000.0;
+	double eps = 0.0001;
+	double delta = 0.0001;
+
+	while ((b - a) / 2 >= eps) {
+		double lambda1 = (a + b - delta) / 2;
+		double lambda2 = (a + b + delta) / 2;
+		if (pow((target - Process(totalSum - lambda1 * Derivative())), 2) >
+			pow((target - Process(totalSum - lambda2 * Derivative())), 2))
+			//if (Process(totalSum - lambda1 * Derivative()) > Process(totalSum - lambda2 * Derivative()))
+			a = lambda1;
+		else
+			b = lambda2;
+	}
+	return (a + b) / 2;
 }
 
 void HiddenNeuron::WeightsUpdate()
