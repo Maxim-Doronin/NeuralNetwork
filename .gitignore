@@ -27,3 +27,17 @@
 *.exe
 *.out
 *.app
+
+*.opendb
+*.db
+*.txt
+*.pdb
+*.ilk
+*.tlog
+*.log
+*.lastbuildstate
+*.idb
+*.config
+*.suo
+*.vcxproj.user
+*.iobj
