@@ -56,6 +56,69 @@ NeuralNetwork::NeuralNetwork(const int& _inputs, const int& _outputs, const int&
 	}
 }
 
+NeuralNetwork::NeuralNetwork(const char* filename)
+{
+	std::ifstream input(filename);
+
+
+	Function* OutputNeuronsFunc;
+	Function* InputNeuronsFunc;
+	std::vector<Neuron*> outputLayer;
+	std::vector<Neuron*> inputLayer;
+	neuralFactory = new PerceptronNeuronFactory;
+	trainingAlgoritm = new Backpropagation(this);
+	OutputNeuronsFunc = new Sigmoid;
+	InputNeuronsFunc = new Linear;
+
+	int layerNumber;
+	input >> layerNumber;
+	input >> inputs;
+	input >> outputs;
+	input >> hidden;
+	for (int i = 0; i < outputs; i++) {
+		outputLayer.push_back(neuralFactory->CreateOutputNeuron(OutputNeuronsFunc));
+	}
+	layers.push_back(outputLayer);
+
+	for (int i = layerNumber - 2; i > 0; i--) {
+		std::vector<Neuron*> HiddenLayer;
+		for (int j = 0; j < hidden; j++) {
+			Neuron* hiddenNeuron = neuralFactory->CreateHiddenNeuron(layers[0], OutputNeuronsFunc);
+			double weight;
+			for (int k = 0; k < layers[0].size(); k++) {
+				input >> weight;
+				hiddenNeuron->GetOutputLinks().at(k)->SetWeigth(weight);
+			}
+			HiddenLayer.push_back(hiddenNeuron);
+		}
+		layers.insert(layers.begin(), HiddenLayer);
+	}
+
+	for (int i = 0; i < inputs; i++) {
+		Neuron *inputNeuron = neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc);
+		double weight;
+		for (int k = 0; k < layers[0].size(); k++) {
+			input >> weight;
+			inputNeuron->GetOutputLinks().at(k)->SetWeigth(weight);
+		}
+		inputLayer.push_back(inputNeuron);
+	}
+	layers.insert(layers.begin(), inputLayer);
+
+	int biasNumber;
+	input >> biasNumber;
+
+	for (int i = 1; i < layerNumber; i++) {
+		Neuron *biasNeuron = neuralFactory->CreateInputNeuron(layers[i], InputNeuronsFunc);
+		double weight;
+		for (int k = 0; k < layers[i].size(); k++) {
+			input >> weight;
+			biasNeuron->GetOutputLinks().at(k)->SetWeigth(weight);
+		}
+		biasLayer.push_back(biasNeuron);
+	}
+}
+
 NeuralNetwork::~NeuralNetwork()
 {
 	delete neuralFactory;
@@ -80,13 +143,14 @@ bool NeuralNetwork::Train(const std::vector<std::vector<double> >& data, const s
 	double oldMSE = 11;
 	double newMSE;
 	int repeats = 0;;
-	while (flag && iterations < 3) {
+	while (flag && iterations < 15) {
 		iterations++;
 		std::cout << "--Start algorithm" << std::endl;
 		for (int i = 0; i < data.size(); i++) {
 			if (i % 100 == 0) {
 				newMSE = this->GetMSE();
 				std::cout << newMSE << std::endl;
+				/*
 				if (fabs(oldMSE - newMSE) < 0.1) {
 					repeats++;
 					if (repeats >= 3) {
@@ -97,6 +161,7 @@ bool NeuralNetwork::Train(const std::vector<std::vector<double> >& data, const s
 				}
 				else
 					repeats = 0;
+					*/
 				oldMSE = newMSE;
 				this->ResetMSE();
 			}
@@ -195,5 +260,43 @@ void NeuralNetwork::ShowNetworkState()
 			std::cout << "  Bias: " << std::endl;
 			biasLayer[indOfLayer]->GetStatus();
 		}
+	}
+}
+
+
+void NeuralNetwork::SaveParameters(const char* filename)
+{
+	remove(filename);
+	std::ofstream output(filename);
+
+	output << this->size() << std::endl;
+	output << this->inputs << std::endl;
+	output << this->outputs << std::endl;
+	output << this->hidden << std::endl;
+	for (int i = this->size() - 2; i >= 0; i--) {
+		int layerSize = this->GetLayer(i).size();
+		for (int j = 0; j < layerSize; j++) {
+			Neuron* neuron = this->GetLayer(i).at(j);
+			int linksNumber = neuron->GetOutputLinks().size();
+			for (int k = 0; k < linksNumber; k++) {
+				NeuralLink* link = neuron->GetOutputLinks().at(k);
+				double weight = link->GetWeigth();
+				output << weight << ' ';
+			}
+			output << std::endl;
+		}
+	}
+
+	int biasSize = this->biasLayer.size();
+	output << biasSize << std::endl;
+	for (int i = 0; i < biasSize; i++) {
+		Neuron* neuron = this->biasLayer.at(i);
+		int linksNumber = neuron->GetOutputLinks().size();
+		for (int j = 0; j < linksNumber; j++) {
+			NeuralLink* link = neuron->GetOutputLinks().at(j);
+			double weight = link->GetWeigth();
+			output << weight << ' ';
+		}
+		output << std::endl;
 	}
 }
