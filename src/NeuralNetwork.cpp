@@ -59,7 +59,10 @@ NeuralNetwork::NeuralNetwork(const int& _inputs, const int& _outputs, const int&
 NeuralNetwork::NeuralNetwork(const char* filename)
 {
 	std::ifstream input(filename);
-
+	if (!input) {
+		std::cout << "Cannot open file" << std::endl;
+		exit(1);
+	}
 
 	Function* OutputNeuronsFunc;
 	Function* InputNeuronsFunc;

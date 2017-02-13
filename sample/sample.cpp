@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 	}
 	else {
 		cout << "--Create Neural Network" << endl;
-		NeuralNetwork *net = new NeuralNetwork("C:\\Users\\asus\\NeuralNetwork\\sln\\NeuralNetwork\\x64\\Release\\output.txt");
+		NeuralNetwork *net = new NeuralNetwork(argv[1]);
 		cout << "--Neural Network succsessfully created" << endl;
 		ifstream trainStream("../../../../data/train.csv");
 		if (!trainStream) {
