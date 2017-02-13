@@ -60,7 +60,7 @@ NeuralNetwork::NeuralNetwork(const char* filename)
 {
 	std::ifstream input(filename);
 	if (!input) {
-		std::cout << "Cannot open file" << std::endl;
+		std::cout << "--Cannot open file" << std::endl;
 		exit(1);
 	}
 
