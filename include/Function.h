@@ -15,24 +15,24 @@ class Linear : public Function {
 public:
 	Linear() {};
 	virtual ~Linear() {};
-	virtual double Process(double x) { return x; };
-	virtual double Derivative(double x) { return 0; };
+	virtual double Process(double x);
+	virtual double Derivative(double x);
 };
 
 class Sigmoid : public Function {
 public:
 	Sigmoid() {};
 	virtual ~Sigmoid() {};
-	virtual double 	Process(double x) { return ((double)1 / (1 + exp(-x))); };
-	virtual double 	Derivative(double x) { return (this->Process(x)*(1 - this->Process(x))); };
+	virtual double Process(double x);
+	virtual double Derivative(double x);
 };
 
 class BipolarSigmoid : public Function {
 public:
 	BipolarSigmoid() {};
 	virtual ~BipolarSigmoid() {};
-	virtual double 	Process(double x) { return ((double)2 / (1 + exp(-x)) - 1); };
-	virtual double 	Derivative(double x) { return (0.5 * (1 + this->Process(x)) * (1 - this->Process(x))); };
+	virtual double Process(double x);
+	virtual double Derivative(double x);
 };
 
 #endif // !_FUNCTION_H_

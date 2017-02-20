@@ -142,6 +142,8 @@
     <ClInclude Include="..\..\..\include\TrainAlgorithm.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\Function.cpp" />
+    <ClCompile Include="..\..\..\src\NeuralFactory.cpp" />
     <ClCompile Include="..\..\..\src\NeuralLink.cpp" />
     <ClCompile Include="..\..\..\src\NeuralNetwork.cpp" />
     <ClCompile Include="..\..\..\src\Neuron.cpp" />
