@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _NEURALLINK_H
+#define _NEURALLINK_H
 
 class Neuron;
 
@@ -33,3 +34,4 @@ protected:
 	double	errorInformationTerm;
 };
 
+#endif // !_NEURALLINK_H

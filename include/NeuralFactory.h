@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _NEURALFACTORY_H_
+#define _NEURALFACTORY_H_
+
 
 #include "Neuron.h"
 
@@ -23,3 +25,4 @@ public:
 	virtual Neuron * 	CreateHiddenNeuron(std::vector<Neuron*>& inNeuronsLinkTo, Function* inNetFunc)	{ return new HiddenNeuron(new Neuron(inNeuronsLinkTo, inNetFunc)); };
 };
 
+#endif // !_NEURALFACTORY_H_

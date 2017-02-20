@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _NEURALNETWORK_H_
+#define _NEURALNETWORK_H_
+
 #include "NeuralFactory.h"
 #include "Function.h"
 #include "TrainAlgorithm.h"
@@ -51,3 +53,5 @@ protected:
 	double								meanSquaredError;			
 	double								minMSE;						
 };
+
+#endif // !_NEURALNETWORK_H_

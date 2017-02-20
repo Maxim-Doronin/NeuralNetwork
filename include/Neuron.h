@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _NEURON_H_
+#define _NEURON_H_
+
 #include <vector>
 #include "Function.h"
 #include "NeuralLink.h"
@@ -114,3 +116,5 @@ public:
 	virtual void	GetStatus()								{ neuron->GetStatus(); };
 	virtual double	GetLearningRate()						{ return neuron->GetLearningRate(); }
 };
+
+#endif // !_NEURON_H_

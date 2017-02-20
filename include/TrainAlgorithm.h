@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _TRAINALGORITHM_H_
+#define _TRAINALGORITHM_H_
+
 #include <vector>
 #include "NeuralNetwork.h"
 
@@ -27,3 +29,5 @@ protected:
 	void simpleInitialization();
 	NeuralNetwork* neuralNetwork;
 };
+
+#endif // !_TRAINALGORITHM_H_

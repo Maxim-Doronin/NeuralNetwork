@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _FUNCTION_H_
+#define _FUNCTION_H_
+
 #include <cmath>
 
 class Function {
@@ -32,3 +34,5 @@ public:
 	virtual double 	Process(double x) { return ((double)2 / (1 + exp(-x)) - 1); };
 	virtual double 	Derivative(double x) { return (0.5 * (1 + this->Process(x)) * (1 - this->Process(x))); };
 };
+
+#endif // !_FUNCTION_H_
