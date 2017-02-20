@@ -1,7 +1,7 @@
 #include "NeuralNetwork.h"
 
-NeuralNetwork::NeuralNetwork(const int& _inputs, const int& _outputs, const int& _numOfHiddenLayers,
-			const int& _hidden, const char* type)
+NeuralNetwork::NeuralNetwork(const int& _inputs, const int& _outputs,
+	const int& _numOfHiddenLayers, const int& _hidden, const char* type)
 {
 	if (_inputs < 0 || _outputs < 0)
 		std::cout << "Error in Neural Network constructor: The number of input and output neurons has to be more than 0!\n"; 
@@ -30,7 +30,8 @@ NeuralNetwork::NeuralNetwork(const int& _inputs, const int& _outputs, const int&
 
 		//create output neurons
 		for (int i = 0; i < outputs; i++) {
-			outputLayer.push_back(neuralFactory->CreateOutputNeuron(OutputNeuronsFunc));
+			Neuron* outN = neuralFactory->CreateOutputNeuron(OutputNeuronsFunc);
+			outputLayer.push_back(outN);
 		}
 		layers.push_back(outputLayer);
 
@@ -41,15 +42,20 @@ NeuralNetwork::NeuralNetwork(const int& _inputs, const int& _outputs, const int&
 				Neuron* hidden = neuralFactory->CreateHiddenNeuron(layers[0], OutputNeuronsFunc);
 				HiddenLayer.push_back(hidden);
 			}
-			biasLayer.insert(biasLayer.begin(), neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc));
+			Neuron* hidN = neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc);
+			biasLayer.insert(biasLayer.begin(), hidN);
 			layers.insert(layers.begin(), HiddenLayer);
 		}
 
 		//create input neurons
 		for (int i = 0; i < inputs; i++) {
-			inputLayer.push_back(neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc));
+			Neuron* inpN = neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc);
+			inputLayer.push_back(inpN);
 		}
-		biasLayer.insert(biasLayer.begin(), neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc));
+		
+		//create bias
+		Neuron* biasN = neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc);
+		biasLayer.insert(biasLayer.begin(), biasN);
 		layers.insert(layers.begin(), inputLayer);
 
 		trainingAlgoritm->WeightsInitialization();
@@ -78,47 +84,52 @@ NeuralNetwork::NeuralNetwork(const char* filename)
 	input >> inputs;
 	input >> outputs;
 	input >> hidden;
+
+	//create output neurons
 	for (int i = 0; i < outputs; i++) {
-		outputLayer.push_back(neuralFactory->CreateOutputNeuron(OutputNeuronsFunc));
+		Neuron* outN = neuralFactory->CreateOutputNeuron(OutputNeuronsFunc);
+		outputLayer.push_back(outN);
 	}
 	layers.push_back(outputLayer);
 
+	//create hidden neurons
 	for (int i = layerNumber - 2; i > 0; i--) {
 		std::vector<Neuron*> HiddenLayer;
 		for (int j = 0; j < hidden; j++) {
-			Neuron* hiddenNeuron = neuralFactory->CreateHiddenNeuron(layers[0], OutputNeuronsFunc);
+			Neuron* hidN = neuralFactory->CreateHiddenNeuron(layers[0], OutputNeuronsFunc);
 			double weight;
 			for (int k = 0; k < layers[0].size(); k++) {
 				input >> weight;
-				hiddenNeuron->GetOutputLinks().at(k)->SetWeigth(weight);
+				hidN->GetOutputLinks().at(k)->SetWeigth(weight);
 			}
-			HiddenLayer.push_back(hiddenNeuron);
+			HiddenLayer.push_back(hidN);
 		}
 		layers.insert(layers.begin(), HiddenLayer);
 	}
 
+	//create input neurons
 	for (int i = 0; i < inputs; i++) {
-		Neuron *inputNeuron = neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc);
+		Neuron *inpN = neuralFactory->CreateInputNeuron(layers[0], InputNeuronsFunc);
 		double weight;
 		for (int k = 0; k < layers[0].size(); k++) {
 			input >> weight;
-			inputNeuron->GetOutputLinks().at(k)->SetWeigth(weight);
+			inpN->GetOutputLinks().at(k)->SetWeigth(weight);
 		}
-		inputLayer.push_back(inputNeuron);
+		inputLayer.push_back(inpN);
 	}
 	layers.insert(layers.begin(), inputLayer);
 
+	//create bias
 	int biasNumber;
 	input >> biasNumber;
-
 	for (int i = 1; i < layerNumber; i++) {
-		Neuron *biasNeuron = neuralFactory->CreateInputNeuron(layers[i], InputNeuronsFunc);
+		Neuron *biasN = neuralFactory->CreateInputNeuron(layers[i], InputNeuronsFunc);
 		double weight;
 		for (int k = 0; k < layers[i].size(); k++) {
 			input >> weight;
-			biasNeuron->GetOutputLinks().at(k)->SetWeigth(weight);
+			biasN->GetOutputLinks().at(k)->SetWeigth(weight);
 		}
-		biasLayer.push_back(biasNeuron);
+		biasLayer.push_back(biasN);
 	}
 }
 
@@ -139,7 +150,8 @@ NeuralNetwork::~NeuralNetwork()
 
 }
 
-bool NeuralNetwork::Train(const std::vector<std::vector<double> >& data, const std::vector<std::vector<double> >& target)
+bool NeuralNetwork::Train(const std::vector<std::vector<double> >& data, 
+	const std::vector<std::vector<double> >& target)
 {
 	bool flag = true;
 	int iterations = 0;
@@ -153,18 +165,6 @@ bool NeuralNetwork::Train(const std::vector<std::vector<double> >& data, const s
 			if (i % 100 == 0) {
 				newMSE = this->GetMSE();
 				std::cout << newMSE << std::endl;
-				/*
-				if (fabs(oldMSE - newMSE) < 0.1) {
-					repeats++;
-					if (repeats >= 3) {
-						this->ShakeWeights();
-						std::cout << "shaked" << std::endl;
-						repeats = 0;
-					}
-				}
-				else
-					repeats = 0;
-					*/
 				oldMSE = newMSE;
 				this->ResetMSE();
 			}
@@ -194,30 +194,23 @@ uchar NeuralNetwork::GetNetResponse(const std::vector<double>& inData)
 			this->GetInputLayer().at(i)->Input(inData[i]);
 		}
 
-		for (int numOfLayers = 0; numOfLayers < layers.size() - 1; numOfLayers++) {
-			biasLayer[numOfLayers]->Input(1);
-
-			for (int indexOfData = 0; indexOfData < layers.at(numOfLayers).size(); indexOfData++) {
-				layers.at(numOfLayers).at(indexOfData)->Activation();
+		for (int layerIdx = 0; layerIdx < layers.size() - 1; layerIdx++) {
+			biasLayer[layerIdx]->Input(1);
+			for (int neurIdx = 0; neurIdx < layers.at(layerIdx).size(); neurIdx++) {
+				layers.at(layerIdx).at(neurIdx)->Activation();
 			}
-
-			biasLayer[numOfLayers]->Activation();
+			biasLayer[layerIdx]->Activation();
 		}
+
 		double maxRes = -1;
 		int answer;
-		//std::cout << "Net response is: { ";
 		for (int ioutput = 0; ioutput < outputs; ioutput++) {
 			double res = this->GetOutputLayer().at(ioutput)->Activation();
 			if (res > maxRes) {
 				maxRes = res;
 				answer = ioutput;
 			}
-			//std::cout.precision(4);
-			//std::cout.setf(std::ios::fixed);
-			//std::cout << res << "\t";
-			//netResponse.push_back(res);
 		}
-		//std::cout << "|| " << answer << " } ";
 		this->ResetSums();
 		return answer;
 	}
@@ -270,29 +263,29 @@ std::vector<Neuron*>& 	NeuralNetwork::GetBiasLayer()
 
 void NeuralNetwork::UpdateWeights()
 {
-	for (int idxOfLayer = 0; idxOfLayer < layers.size(); idxOfLayer++) {
-		for (int idxOfNeuron = 0; idxOfNeuron < layers[idxOfLayer].size(); idxOfNeuron++) {
-			layers[idxOfLayer].at(idxOfNeuron)->WeightsUpdate();
+	for (int layerIdx = 0; layerIdx < layers.size(); layerIdx++) {
+		for (int neurIdx = 0; neurIdx < layers[layerIdx].size(); neurIdx++) {
+			layers[layerIdx].at(neurIdx)->WeightsUpdate();
 		}
 	}
 }
 
 void NeuralNetwork::ShakeWeights() {
-	for (int idxOfLayer = 0; idxOfLayer < layers.size(); idxOfLayer++) {
-		for (int idxOfNeuron = 0; idxOfNeuron < layers[idxOfLayer].size(); idxOfNeuron++) {
-			layers[idxOfLayer].at(idxOfNeuron)->ShakeWeights();
+	for (int layerIdx = 0; layerIdx < layers.size(); layerIdx++) {
+		for (int neurIdx = 0; neurIdx < layers[layerIdx].size(); neurIdx++) {
+			layers[layerIdx].at(neurIdx)->ShakeWeights();
 		}
 	}
 }
 
 void NeuralNetwork::ResetSums()
 {
-	for (int i = 0; i < layers.size(); i++)
-		for (unsigned int indexOfOutputElements = 0; indexOfOutputElements < layers.at(i).size(); indexOfOutputElements++)
-			layers.at(i).at(indexOfOutputElements)->ResetTotalSum();
+	for (int layerIdx = 0; layerIdx < layers.size(); layerIdx++)
+		for (int neurIdx = 0; neurIdx < layers.at(layerIdx).size(); neurIdx++)
+			layers.at(layerIdx).at(neurIdx)->ResetTotalSum();
 
-	for (unsigned int i = 0; i < layers.size() - 1; i++)
-		biasLayer[i]->ResetTotalSum();
+	for (int layerIdx = 0; layerIdx < layers.size() - 1; layerIdx++)
+		biasLayer[layerIdx]->ResetTotalSum();
 }
 
 void NeuralNetwork::AddMSE(double localMSE)
@@ -313,19 +306,18 @@ void NeuralNetwork::ResetMSE()
 void NeuralNetwork::ShowNetworkState()
 {
 	std::cout << std::endl;
-	for (int indOfLayer = 0; indOfLayer < layers.size(); indOfLayer++) {
-		std::cout << "Layer index: " << indOfLayer << std::endl;
-		for (int indOfNeuron = 0; indOfNeuron < layers[indOfLayer].size(); indOfNeuron++) {
-			std::cout << "  Neuron index: " << indOfNeuron << std::endl;
-			layers[indOfLayer].at(indOfNeuron)->GetStatus();
+	for (int layerIdx = 0; layerIdx < layers.size(); layerIdx++) {
+		std::cout << "Layer index: " << layerIdx << std::endl;
+		for (int neurIdx = 0; neurIdx < layers[layerIdx].size(); neurIdx++) {
+			std::cout << "  Neuron index: " << neurIdx << std::endl;
+			layers[layerIdx].at(neurIdx)->GetStatus();
 		}
-		if (indOfLayer < biasLayer.size()) {
+		if (layerIdx < biasLayer.size()) {
 			std::cout << "  Bias: " << std::endl;
-			biasLayer[indOfLayer]->GetStatus();
+			biasLayer[layerIdx]->GetStatus();
 		}
 	}
 }
-
 
 void NeuralNetwork::SaveParameters(const char* filename)
 {
