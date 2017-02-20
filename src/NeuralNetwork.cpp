@@ -223,14 +223,49 @@ uchar NeuralNetwork::GetNetResponse(const std::vector<double>& inData)
 	}
 }
 
-void NeuralNetwork::ResetSums()
-{
-	for (int i = 0; i < layers.size(); i++)
-		for (unsigned int indexOfOutputElements = 0; indexOfOutputElements < layers.at(i).size(); indexOfOutputElements++)
-			layers.at(i).at(indexOfOutputElements)->ResetTotalSum();
+void NeuralNetwork::SetAlgorithm(TrainAlgorithm* _trainingAlgorithm)
+{ 
+	trainingAlgoritm = _trainingAlgorithm; 
+}
 
-	for (unsigned int i = 0; i < layers.size() - 1; i++)
-		biasLayer[i]->ResetTotalSum();
+void NeuralNetwork::SetNeuronFactory(NeuronFactory* neuronFactory)
+{ 
+	neuralFactory = neuronFactory; 
+}
+
+const double& NeuralNetwork::GetMinMSE()
+{ 
+	return minMSE; 
+}
+
+void NeuralNetwork::SetMinMSE(const double& _minMse)
+{ 
+	minMSE = _minMse; 
+}
+
+std::vector<Neuron *>&	NeuralNetwork::GetLayer(const int& idx)
+{ 
+	return layers[idx]; 
+}
+
+unsigned int NeuralNetwork::size()
+{ 
+	return layers.size(); 
+}
+
+std::vector<Neuron*>&	NeuralNetwork::GetOutputLayer()
+{ 
+	return layers[layers.size() - 1]; 
+}
+
+std::vector<Neuron*>&	NeuralNetwork::GetInputLayer()
+{ 
+	return layers[0]; 
+}
+
+std::vector<Neuron*>& 	NeuralNetwork::GetBiasLayer()
+{ 
+	return biasLayer; 
 }
 
 void NeuralNetwork::UpdateWeights()
@@ -248,6 +283,31 @@ void NeuralNetwork::ShakeWeights() {
 			layers[idxOfLayer].at(idxOfNeuron)->ShakeWeights();
 		}
 	}
+}
+
+void NeuralNetwork::ResetSums()
+{
+	for (int i = 0; i < layers.size(); i++)
+		for (unsigned int indexOfOutputElements = 0; indexOfOutputElements < layers.at(i).size(); indexOfOutputElements++)
+			layers.at(i).at(indexOfOutputElements)->ResetTotalSum();
+
+	for (unsigned int i = 0; i < layers.size() - 1; i++)
+		biasLayer[i]->ResetTotalSum();
+}
+
+void NeuralNetwork::AddMSE(double localMSE)
+{ 
+	meanSquaredError += localMSE; 
+}
+
+double NeuralNetwork::GetMSE()
+{ 
+	return meanSquaredError; 
+}
+
+void NeuralNetwork::ResetMSE()
+{ 
+	meanSquaredError = 0; 
 }
 
 void NeuralNetwork::ShowNetworkState()
