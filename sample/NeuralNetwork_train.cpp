@@ -22,7 +22,6 @@ int main(int argc, char **argv) {
 	int i = 0;
 	vector<vector<double> > traindata;
 	vector<vector<double> > targetdata;
-	uchar tmp;
 	char buf[5000];
 	int trainSize = atoi(argv[2]);
 	while (i < trainSize) {
