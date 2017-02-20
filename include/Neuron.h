@@ -18,6 +18,7 @@ protected:
 
 public:
 	Neuron();
+	Neuron(const Neuron* _neuron);
 	Neuron(Function *_function);
 	Neuron(std::vector<NeuralLink*>& _outputs, Function* _function);
 	Neuron(std::vector<Neuron *>& _outputs, Function* _function);
