@@ -16,8 +16,8 @@ Neuron::Neuron(const Neuron* _neuron)
 	totalSum = 0.0;
 	learningRate = _neuron->learningRate;
 
-	copy(_neuron->inputs.begin(), _neuron->inputs.end(), inputs);
-	copy(_neuron->outputs.begin(), _neuron->outputs.end(), outputs);
+	copy(_neuron->inputs.begin(), _neuron->inputs.end(), inputs.begin());
+	copy(_neuron->outputs.begin(), _neuron->outputs.end(), outputs.begin());
 }
 
 Neuron::Neuron(Function *_function)
@@ -162,6 +162,22 @@ void Neuron::GetStatus() {
 #pragma endregion
 
 #pragma region outputNeuron
+OutputNeuron::OutputNeuron() : Neuron()
+{ }
+
+OutputNeuron::OutputNeuron(Neuron* _neuron) : Neuron(_neuron) 
+{ }
+
+OutputNeuron::OutputNeuron(Function *_function) : Neuron(_function)
+{ }
+
+OutputNeuron::OutputNeuron(std::vector<NeuralLink*>& _outputs, Function* _function)
+	: Neuron(_outputs, _function)
+{ }
+
+OutputNeuron::OutputNeuron(std::vector<Neuron *>& _outputs, Function* _function)
+	: Neuron (_outputs, _function)
+{ }
 
 double OutputNeuron::Activation() {
 	double output = this->Process();
@@ -172,12 +188,12 @@ double OutputNeuron::Activation() {
 double OutputNeuron::TrainNeuron(double target)
 {
 	double res;
-	double error = (target - outputSum) * neuron->Derivative();
+	double error = (target - outputSum) * this->Derivative();
 	learningRate = CalculateLearningRate(target);
 	res = pow(target - outputSum, 2);
 
 	for (int i = 0; i < (this->GetInputLinks()).size(); i++) {
-		NeuralLink * inputLink = (this->GetInputLinks()).at(i);
+		NeuralLink* inputLink = (this->GetInputLinks()).at(i);
 		
 		double Zj = inputLink->GetLastTranslatedSignal();
 		double weightCorrectionTerm = Zj * error;
