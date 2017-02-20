@@ -30,7 +30,6 @@
 
 *.opendb
 *.db
-*.txt
 *.pdb
 *.ilk
 *.tlog
