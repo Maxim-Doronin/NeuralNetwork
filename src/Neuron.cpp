@@ -243,22 +243,39 @@ void OutputNeuron::ShakeWeights()
 #pragma endregion
 
 #pragma region hiddenNeuron
+HiddenNeuron::HiddenNeuron() : Neuron()
+{ }
+
+HiddenNeuron::HiddenNeuron(Neuron* _neuron) : Neuron(_neuron)
+{ }
+
+HiddenNeuron::HiddenNeuron(Function *_function) : Neuron(_function)
+{ }
+
+HiddenNeuron::HiddenNeuron(std::vector<NeuralLink*>& _outputs, Function* _function)
+	: Neuron(_outputs, _function)
+{ }
+
+HiddenNeuron::HiddenNeuron(std::vector<Neuron *>& _outputs, Function* _function)
+	: Neuron(_outputs, _function)
+{ }
+
 double HiddenNeuron::Activation()
 {
 	for (int i = 0; i < this->GetNumOfOutputLinks(); i++) {
 
-		NeuralLink* currentLink = neuron->at(i);
+		NeuralLink* currentLink = this->at(i);
 		Neuron* currentNeuronLinkedTo = currentLink->GetNeuron();
 
 		double weight = currentLink->GetWeigth();
-		double sum = neuron->GetTotalSum();
-		double zj = (neuron->Process(sum));
+		double sum = this->GetTotalSum();
+		double zj = (this->Process(sum));
 		double output = zj * weight;
 
 		currentLink->SetLastTranslatedSignal(zj);
 		currentNeuronLinkedTo->Input(output);
 	}
-	return neuron->GetTotalSum();
+	return this->GetTotalSum();
 }
 
 double HiddenNeuron::TrainNeuron(double target)

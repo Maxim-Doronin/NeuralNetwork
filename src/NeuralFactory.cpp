@@ -9,10 +9,10 @@ Neuron*	PerceptronNeuronFactory::CreateInputNeuron
 Neuron* PerceptronNeuronFactory::CreateHiddenNeuron
 	(std::vector<Neuron*>& inNeuronsLinkTo,	Function* inNetFunc)
 {
-	return new HiddenNeuron(new Neuron(inNeuronsLinkTo, inNetFunc));
+	return new HiddenNeuron(inNeuronsLinkTo, inNetFunc);
 }
 
 Neuron* PerceptronNeuronFactory::CreateOutputNeuron(Function * inNetFunc)
 {
-	return new OutputNeuron(new Neuron(inNetFunc));
+	return new OutputNeuron(inNetFunc);
 }
