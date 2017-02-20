@@ -4,65 +4,79 @@
 #include <stdlib.h>
 #include <time.h>
 
-NeuralLink::NeuralLink() {
+NeuralLink::NeuralLink() 
+{
 	weigth = 0.0;
 	neuronNext = 0;
 	weigthDelta = 0.0;
 }
 
-NeuralLink::NeuralLink(Neuron *inNeuron, double inWeigth) {
+NeuralLink::NeuralLink(Neuron *inNeuron, double inWeigth) 
+{
 	weigth = inWeigth;
 	neuronNext = inNeuron;
 	weigthDelta = 0.0;
 }
 
-void NeuralLink::SetWeigth(const double inWeigth) {
+void NeuralLink::SetWeigth(const double inWeigth) 
+{
 	weigth = inWeigth;
 }
 
-double NeuralLink::GetWeigth() const {
+double NeuralLink::GetWeigth() const 
+{
 	return weigth;
 }
 
-void NeuralLink::SetNeuron(Neuron* in) {
+void NeuralLink::SetNeuron(Neuron* in) 
+{
 	neuronNext = in;
 }
 
-Neuron* NeuralLink::GetNeuron() const {
+Neuron* NeuralLink::GetNeuron() const
+{
 	return neuronNext;
 }
 
-void NeuralLink::SetWeigthCorrection(const double inWeigthCorrection) {
+void NeuralLink::SetWeigthCorrection(const double inWeigthCorrection) 
+{
 	weigthDelta = inWeigthCorrection;
 }
 
-double NeuralLink::GetWeigthCorrection() const {
+double NeuralLink::GetWeigthCorrection() const 
+{
 	return weigthDelta;
 }
 
-void NeuralLink::UpdateWeigth() {
+void NeuralLink::UpdateWeigth() 
+{
 	weigth += weigthDelta;
 }
 
-void NeuralLink::ShakeWeight() {
+void NeuralLink::ShakeWeight() 
+{
 	srand((unsigned)time(0));
 	double offset = ((float)rand() / RAND_MAX) / 2 * weigth;
 	weigth += offset - weigth / 4;
 }
 
-void NeuralLink::SetLastTranslatedSignal(double inLastTranslatedSignal) {
+void NeuralLink::SetLastTranslatedSignal(double inLastTranslatedSignal) 
+{
 	lastTranslatedSignal = inLastTranslatedSignal;
 };
 
-double	NeuralLink::GetLastTranslatedSignal() {
+double NeuralLink::GetLastTranslatedSignal() 
+{
 	return lastTranslatedSignal;
 }
 
-void	NeuralLink::SetErrorInFormationTerm(double inEITerm) {
+void NeuralLink::SetErrorInFormationTerm(double inEITerm) 
+{
 	errorInformationTerm = inEITerm;
 }
 
-double	NeuralLink::GetErrorInFormationTerm() {
+double NeuralLink::GetErrorInFormationTerm() 
+{
 	return errorInformationTerm;
 }
 
