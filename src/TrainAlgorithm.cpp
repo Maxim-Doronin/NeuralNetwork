@@ -8,50 +8,58 @@ void Backpropagation::hardInitialiazation()
 {
 	srand((unsigned)time(0));
 
-	double numOfInputs = neuralNetwork->inputs;
-	double numOfHiddens = neuralNetwork->hidden;
-	double degree = 1.0 / numOfInputs;
-	double scaleFactor = 0.7*(pow(numOfHiddens, degree));
+	float numOfInputs = (float)neuralNetwork->inputs;
+	float numOfHiddens = (float)neuralNetwork->hidden;
+	float degree = 1.0f / numOfInputs;
+	float scaleFactor = 0.7f * (pow(numOfHiddens, degree));
 
-	for (int layerIdx = 0; layerIdx < neuralNetwork->size(); layerIdx++) {
-		for (int neuronIdx = 0; neuronIdx < neuralNetwork->GetLayer(layerIdx).size(); neuronIdx++) {
+	int layerSize = neuralNetwork->size();
+	for (int layerIdx = 0; layerIdx < layerSize; layerIdx++) {
+		int neuronSize = (int)neuralNetwork->GetLayer(layerIdx).size();
+		for (int neuronIdx = 0; neuronIdx < neuronSize; neuronIdx++) {
 			Neuron* currentNeuron = neuralNetwork->GetLayer(layerIdx).at(neuronIdx);
-
-			for (int linkIdx = 0; linkIdx < currentNeuron->GetNumOfOutputLinks(); linkIdx++) {
+			int outputsSize = currentNeuron->GetNumOfOutputLinks();
+			for (int linkIdx = 0; linkIdx < outputsSize; linkIdx++) {
 				NeuralLink* currentNeuralLink = currentNeuron->at(linkIdx);
-				float pseudoRandWeight = -0.5 + (float)rand() / (float)RAND_MAX;
-				currentNeuralLink->SetWeigth(pseudoRandWeight);
+				float weight = -0.5f + (float)rand() / (float)RAND_MAX;
+				currentNeuralLink->SetWeigth(weight);
 			}
 		}
 	}
 
-	for (int neuronHiddenIdx = 0; neuronHiddenIdx < neuralNetwork->GetLayer(1).size(); neuronHiddenIdx++) {
+	for (int layerIdx = 0; layerIdx < layerSize - 1; layerIdx++) {
 		double dSquaredNorm = 0;
 
-		for (int neuronInputIdx = 0; neuronInputIdx < neuralNetwork->GetLayer(0).size(); neuronInputIdx++) {
-			Neuron* currentInputNeuron = neuralNetwork->GetLayer(0).at(neuronInputIdx);
-			NeuralLink* currentNeuralLink = currentInputNeuron->at(neuronHiddenIdx);
-			dSquaredNorm += pow(currentNeuralLink->GetWeigth(), 2.0);
+		int neuronSize = (int)neuralNetwork->GetLayer(layerIdx).size();
+		for (int neuronIdx = 0; neuronIdx < neuronSize; neuronIdx++) {
+			Neuron* currentNeuron = neuralNetwork->GetLayer(layerIdx).at(neuronIdx);
+			int outputsSize = currentNeuron->GetNumOfOutputLinks();
+			for (int linkIdx = 0; linkIdx < outputsSize; linkIdx++) {
+				NeuralLink* currentNeuralLink = currentNeuron->at(linkIdx);
+				dSquaredNorm += pow(currentNeuralLink->GetWeigth(), 2.0);
+			}
 		}
-
 		double dNorm = sqrt(dSquaredNorm);
 
-		for (int neuronInputIdx = 0; neuronInputIdx < neuralNetwork->GetLayer(0).size(); neuronInputIdx++) {
-			Neuron* currentInputNeuron = neuralNetwork->GetLayer(0).at(neuronInputIdx);
-			NeuralLink* currentNeuralLink = currentInputNeuron->at(neuronHiddenIdx);
-			double newWeight = (scaleFactor * (currentNeuralLink->GetWeigth())) / dNorm;
-			currentNeuralLink->SetWeigth(newWeight);
+		for (int neuronIdx = 0; neuronIdx < neuronSize; neuronIdx++) {
+			Neuron* currentNeuron = neuralNetwork->GetLayer(0).at(neuronIdx);
+			int outputsSize = currentNeuron->GetNumOfOutputLinks();
+			for (int linkIdx = 0; linkIdx < outputsSize; linkIdx++) {
+				NeuralLink* currentNeuralLink = currentNeuron->at(linkIdx);
+				double weight = (scaleFactor * (currentNeuralLink->GetWeigth())) / dNorm;
+				currentNeuralLink->SetWeigth(weight);
+			}
 		}
-
 	}
 
 	//Bias init
-	for (int layerIdx = 0; layerIdx < neuralNetwork->size() - 1; layerIdx++) {
+	for (int layerIdx = 0; layerIdx < layerSize - 1; layerIdx++) {
 		Neuron* Bias = neuralNetwork->GetBiasLayer().at(layerIdx);
-		for (int linkIdx = 0; linkIdx < Bias->GetNumOfOutputLinks(); linkIdx++) {
+		int biasSize = Bias->GetNumOfOutputLinks();
+		for (int linkIdx = 0; linkIdx < biasSize; linkIdx++) {
 			NeuralLink* currentNeuralLink = Bias->at(linkIdx);
-			float pseudoRandWeight = -scaleFactor + (float)rand() / ((float)RAND_MAX / (scaleFactor + scaleFactor));
-			currentNeuralLink->SetWeigth(pseudoRandWeight);
+			float weight = -scaleFactor + (float)rand() / ((float)RAND_MAX / (scaleFactor + scaleFactor));
+			currentNeuralLink->SetWeigth(weight);
 		}
 	}
 }
@@ -60,22 +68,25 @@ void Backpropagation::simpleInitialization()
 {
 	srand((unsigned)time(0));
 
-	for (unsigned int layerInd = 0; layerInd < neuralNetwork->size(); layerInd++) {
-		for (unsigned int neuronInd = 0; neuronInd < neuralNetwork->GetLayer(layerInd).size(); neuronInd++) {
-			Neuron* currentNeuron = neuralNetwork->GetLayer(layerInd).at(neuronInd);
-			for (int linkInd = 0; linkInd < currentNeuron->GetNumOfOutputLinks(); linkInd++) {
-				NeuralLink* currentNeuralLink = currentNeuron->at(linkInd);
-				float pseudoRandWeight = -0.5 + (float)rand() / ((float)RAND_MAX / (0.5 + 0.5));
-				currentNeuralLink->SetWeigth(pseudoRandWeight);
+	int layerSize = neuralNetwork->size();
+	for (int layerIdx = 0; layerIdx < layerSize; layerIdx++) {
+		int neuronSize = (int)neuralNetwork->GetLayer(layerIdx).size();
+		for (int neuronIdx = 0; neuronIdx < neuronSize; neuronIdx++) {
+			Neuron* currentNeuron = neuralNetwork->GetLayer(layerIdx).at(neuronIdx);
+			int outputSize = currentNeuron->GetNumOfOutputLinks();
+			for (int linkIdx = 0; linkIdx < outputSize; linkIdx++) {
+				NeuralLink* currentNeuralLink = currentNeuron->at(linkIdx);
+				float weight = -0.5f + (float)rand() / ((float)RAND_MAX);
+				currentNeuralLink->SetWeigth(weight);
 			}
 		}
 	}
-	for (unsigned int layerInd = 0; layerInd < neuralNetwork->size() - 1; layerInd++) {
-		Neuron* Bias = neuralNetwork->GetBiasLayer().at(layerInd);
-		for (int linkInd = 0; linkInd < Bias->GetNumOfOutputLinks(); linkInd++) {
-			NeuralLink* currentNeuralLink = Bias->at(linkInd);
-			float pseudoRandWeight = -0.5 + (float)rand() / ((float)RAND_MAX / (0.5 + 0.5));
-			currentNeuralLink->SetWeigth(pseudoRandWeight);
+	for (int layerIdx = 0; layerIdx < layerSize - 1; layerIdx++) {
+		Neuron* Bias = neuralNetwork->GetBiasLayer().at(layerIdx);
+		for (int linkIdx = 0; linkIdx < Bias->GetNumOfOutputLinks(); linkIdx++) {
+			NeuralLink* currentNeuralLink = Bias->at(linkIdx);
+			float weight = -0.5f + (float)rand() / ((float)RAND_MAX);
+			currentNeuralLink->SetWeigth(weight);
 		}
 	}
 }
@@ -90,11 +101,14 @@ Backpropagation::Backpropagation(NeuralNetwork* _neuralNetwork)
 	neuralNetwork = _neuralNetwork;
 }
 
-double Backpropagation::Train(const std::vector<double>& data, const std::vector<double>& target)
+double Backpropagation::Train(const std::vector<double>& data, 
+	const std::vector<double>& target)
 {
 	double result = 0;
-	if (data.size() != neuralNetwork->inputs || target.size() != neuralNetwork->outputs) {
-		std::cout << "Incoorect size of data. Expected: " << neuralNetwork->inputs << " elements" << std::endl;
+	if (data.size() != neuralNetwork->inputs || 
+		target.size() != neuralNetwork->outputs) {
+		std::cout << "Incoorect size of data. Expected: " 
+			<< neuralNetwork->inputs << " elements" << std::endl;
 		return -1;
 	}
 
@@ -105,35 +119,41 @@ double Backpropagation::Train(const std::vector<double>& data, const std::vector
 		}
 
 		//sequential activation of neurons
-		for (int ilayer = 0; ilayer < neuralNetwork->size() - 1; ilayer++) {
-			neuralNetwork->GetBiasLayer().at(ilayer)->Input(1);
-			for (int ineuron = 0; ineuron < neuralNetwork->GetLayer(ilayer).size(); ineuron++) {
-				neuralNetwork->GetLayer(ilayer).at(ineuron)->Activation();
+		int layerSize = neuralNetwork->size();
+		for (int layerIdx = 0; layerIdx < layerSize - 1; layerIdx++) {
+			neuralNetwork->GetBiasLayer().at(layerIdx)->Input(1);
+			int neuronSize = (int)neuralNetwork->GetLayer(layerIdx).size();
+			for (int neuronIdx = 0; neuronIdx < neuronSize; neuronIdx++) {
+				neuralNetwork->GetLayer(layerIdx).at(neuronIdx)->Activation();
 			}
 
-			neuralNetwork->GetBiasLayer().at(ilayer)->Activation();
-			for (int i = 0; i < neuralNetwork->GetBiasLayer().at(ilayer)->GetNumOfOutputLinks(); i++) {
-				neuralNetwork->GetBiasLayer().at(ilayer)->GetOutputLinks().at(i)->SetLastTranslatedSignal(1);
+			neuralNetwork->GetBiasLayer().at(layerIdx)->Activation();
+			Neuron* biasNeuron = neuralNetwork->GetBiasLayer().at(layerIdx);
+			int outputsSize = biasNeuron->GetNumOfOutputLinks();
+			for (int i = 0; i < outputsSize; i++) {
+				biasNeuron->GetOutputLinks().at(i)->SetLastTranslatedSignal(1);
 			}
 		}
 
 		//get network response
 		std::vector<double> netResponseYk;
-		for (int ioutputs = 0; ioutputs < neuralNetwork->outputs; ioutputs++) {
-			double Yk = neuralNetwork->GetOutputLayer().at(ioutputs)->Activation();
+		for (int outputsIdx = 0; outputsIdx < neuralNetwork->outputs; outputsIdx++) {
+			double Yk = neuralNetwork->GetOutputLayer().at(outputsIdx)->Activation();
 			netResponseYk.push_back(Yk);
 		}
 
 		//start trainig output neurons. Calculate MSE.
-		for (int ioutputs = 0; ioutputs < neuralNetwork->outputs; ioutputs++) {
-			result = neuralNetwork->GetOutputLayer().at(ioutputs)->TrainNeuron(target[ioutputs]);
+		for (int outputsIdx = 0; outputsIdx < neuralNetwork->outputs; outputsIdx++) {
+			Neuron* neuron = neuralNetwork->GetOutputLayer().at(outputsIdx);
+			result = neuron->TrainNeuron(target[outputsIdx]);
 			neuralNetwork->AddMSE(result);
 		}
 
 		//train other neurons
-		for (int ilayer = neuralNetwork->size() - 2; ilayer > 0; ilayer--) {
-			for (int ineuron = 0; ineuron < neuralNetwork->GetLayer(ilayer).size(); ineuron++) {
-				neuralNetwork->GetLayer(ilayer).at(ineuron)->TrainNeuron(0);
+		for (int layerIdx = layerSize - 2; layerIdx > 0; layerIdx--) {
+			int neuronSize = (int)neuralNetwork->GetLayer(layerIdx).size();
+			for (int neuronIdx = 0; neuronIdx < neuronSize; neuronIdx++) {
+				neuralNetwork->GetLayer(layerIdx).at(neuronIdx)->TrainNeuron(0);
 			}
 		}
 

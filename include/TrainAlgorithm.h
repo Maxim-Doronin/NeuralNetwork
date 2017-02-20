@@ -11,7 +11,8 @@ class TrainAlgorithm
 {
 public:
 	virtual ~TrainAlgorithm() {};
-	virtual double Train(const std::vector<double>& data, const std::vector<double>& target) = 0;
+	virtual double Train(const std::vector<double>& data, 
+		const std::vector<double>& target) = 0;
 	virtual void WeightsInitialization() = 0;
 };
 
@@ -21,7 +22,8 @@ public:
 	Backpropagation(NeuralNetwork * _neuralNetwork);
 	virtual	~Backpropagation() {};
 
-	virtual double Train(const std::vector<double>& data, const std::vector<double>& target);
+	virtual double Train(const std::vector<double>& data, 
+		const std::vector<double>& target);
 	virtual void WeightsInitialization();
 
 protected:

@@ -35,7 +35,7 @@ public:
 
 protected:
 	std::vector<Neuron *>& GetLayer(const int& idx);
-	unsigned int size();
+	int size();
 	std::vector<Neuron*>& GetOutputLayer();
 	std::vector<Neuron*>& GetInputLayer();
 	std::vector<Neuron*>& GetBiasLayer();

@@ -241,9 +241,9 @@ std::vector<Neuron *>&	NeuralNetwork::GetLayer(const int& idx)
 	return layers[idx]; 
 }
 
-unsigned int NeuralNetwork::size()
+int NeuralNetwork::size()
 { 
-	return layers.size(); 
+	return (int)layers.size(); 
 }
 
 std::vector<Neuron*>&	NeuralNetwork::GetOutputLayer()
@@ -329,10 +329,10 @@ void NeuralNetwork::SaveParameters(const char* filename)
 	output << this->outputs << std::endl;
 	output << this->hidden << std::endl;
 	for (int i = this->size() - 2; i >= 0; i--) {
-		int layerSize = this->GetLayer(i).size();
+		int layerSize = (int)this->GetLayer(i).size();
 		for (int j = 0; j < layerSize; j++) {
 			Neuron* neuron = this->GetLayer(i).at(j);
-			int linksNumber = neuron->GetOutputLinks().size();
+			int linksNumber = (int)neuron->GetOutputLinks().size();
 			for (int k = 0; k < linksNumber; k++) {
 				NeuralLink* link = neuron->GetOutputLinks().at(k);
 				double weight = link->GetWeigth();
@@ -342,11 +342,11 @@ void NeuralNetwork::SaveParameters(const char* filename)
 		}
 	}
 
-	int biasSize = this->biasLayer.size();
+	int biasSize = (int)this->biasLayer.size();
 	output << biasSize << std::endl;
 	for (int i = 0; i < biasSize; i++) {
 		Neuron* neuron = this->biasLayer.at(i);
-		int linksNumber = neuron->GetOutputLinks().size();
+		int linksNumber = (int)neuron->GetOutputLinks().size();
 		for (int j = 0; j < linksNumber; j++) {
 			NeuralLink* link = neuron->GetOutputLinks().at(j);
 			double weight = link->GetWeigth();

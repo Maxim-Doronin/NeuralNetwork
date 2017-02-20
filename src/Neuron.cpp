@@ -85,7 +85,7 @@ void Neuron::Input(double inputData)
 }
 int Neuron::GetNumOfOutputLinks() 
 { 
-	return outputs.size(); 
+	return (int)outputs.size(); 
 }
 
 double Neuron::GetTotalSum() 
