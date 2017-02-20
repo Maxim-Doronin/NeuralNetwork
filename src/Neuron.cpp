@@ -2,15 +2,48 @@
 #include <iostream>
 #include <cmath>
 
-Neuron::Neuron(std::vector<Neuron *>& neuronsLinkTo, Function* _function) {
+#pragma region neuron
+Neuron::Neuron()
+{
+	function = new Linear;
+	totalSum = 0.0;
+	learningRate = LearningRate;
+}
+
+Neuron::Neuron(const Neuron* _neuron)
+{
+	function = _neuron->function;
+	totalSum = 0.0;
+	learningRate = _neuron->learningRate;
+
+	copy(_neuron->inputs.begin(), _neuron->inputs.end(), inputs);
+	copy(_neuron->outputs.begin(), _neuron->outputs.end(), outputs);
+}
+
+Neuron::Neuron(Function *_function)
+{
+	function = _function;
+	totalSum = 0.0;
+	learningRate = LearningRate;
+}
+
+Neuron::Neuron(std::vector<NeuralLink*>& _outputs, Function* _function)
+{
+	function = _function;
+	outputs = _outputs;
+	totalSum = 0.0;
+	learningRate = LearningRate;
+}
+
+Neuron::Neuron(std::vector<Neuron *>& _outputs, Function* _function) {
 	function = _function;
 	totalSum = 0.0;
 	learningRate = LearningRate;
 
-	for (int i = 0; i < neuronsLinkTo.size(); i++) {
-		NeuralLink *newLink = new NeuralLink(neuronsLinkTo[i], 0.0);
+	for (int i = 0; i < _outputs.size(); i++) {
+		NeuralLink *newLink = new NeuralLink(_outputs[i], 0.0);
 		outputs.push_back(newLink);
-		neuronsLinkTo[i]->SetInputLink(newLink);
+		_outputs[i]->SetInputLink(newLink);
 	}
 }
 
@@ -19,6 +52,85 @@ Neuron::~Neuron() {
 	for (int i = 0; i < outputs.size(); i++) {
 		delete outputs[i];
 	}
+}
+
+std::vector<NeuralLink*>& Neuron::GetInputLinks() 
+{ 
+	return inputs; 
+}
+
+std::vector<NeuralLink*>& Neuron::GetOutputLinks() 
+{ 
+	return outputs; 
+}
+
+NeuralLink* Neuron::at(const int& indexOfNeuralLink) 
+{ 
+	return outputs[indexOfNeuralLink]; 
+}
+
+void Neuron::SetInputLink(NeuralLink* newNeuralLink) 
+{ 
+	inputs.push_back(newNeuralLink); 
+}
+
+void Neuron::SetOutputLink(NeuralLink* newNeuralLink) 
+{ 
+	outputs.push_back(newNeuralLink); 
+}
+
+void Neuron::Input(double inputData) 
+{ 
+	totalSum += inputData; 
+}
+int Neuron::GetNumOfOutputLinks() 
+{ 
+	return outputs.size(); 
+}
+
+double Neuron::GetTotalSum() 
+{ 
+	return totalSum; 
+}
+
+void Neuron::ResetTotalSum() 
+{ 
+	totalSum = 0.0; 
+}
+
+double Neuron::Process() 
+{ 
+	return function->Process(totalSum); 
+}
+
+double Neuron::Process(double x) 
+{ 
+	return function->Process(x); 
+}
+double Neuron::Derivative() 
+{ 
+	return function->Derivative(totalSum); 
+}
+
+double Neuron::TrainNeuron(double target) 
+{ 
+	return 0; 
+}
+
+void Neuron::WeightsUpdate() 
+{ };
+
+double Neuron::CalculateLearningRate(double target) 
+{ 
+	return 0.007; 
+}
+
+void Neuron::ShakeWeights() 
+{ };
+
+double Neuron::GetLearningRate() 
+{ 
+	return learningRate; 
 }
 
 double	Neuron::Activation() {
@@ -41,11 +153,15 @@ void Neuron::GetStatus() {
 	for (int i = 0; i < outputs.size(); i++) {
 		NeuralLink* currentLink = outputs.at(i);
 		std::cout << "    Link index: " << i << std::endl;
-		std::cout << "      Weight: " << currentLink->GetWeigth() << "; Weight correction term: " << currentLink->GetWeigthCorrection();
+		std::cout << "      Weight: " << currentLink->GetWeigth() 
+			<< "; Weight correction term: " << currentLink->GetWeigthCorrection();
 		std::cout << std::endl;
 	}
 }
 
+#pragma endregion
+
+#pragma region outputNeuron
 
 double OutputNeuron::Activation() {
 	double output = this->Process();
@@ -108,10 +224,9 @@ void OutputNeuron::ShakeWeights()
 	}
 }
 
+#pragma endregion
 
-
-
-
+#pragma region hiddenNeuron
 double HiddenNeuron::Activation()
 {
 	for (int i = 0; i < this->GetNumOfOutputLinks(); i++) {
@@ -189,3 +304,5 @@ void HiddenNeuron::ShakeWeights()
 		inputLink->ShakeWeight();
 	}
 }
+
+#pragma endregion

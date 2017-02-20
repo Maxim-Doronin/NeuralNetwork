@@ -17,34 +17,34 @@ protected:
 	double learningRate;
 
 public:
-	Neuron() : function(new Linear), totalSum(0.0), learningRate(LearningRate) {};
-	Neuron(Function *_function) : function(_function), totalSum(0.0), learningRate(LearningRate) {};
-	Neuron(std::vector<NeuralLink*>& _outputLinks, Function* _function) : function(_function), outputs(_outputLinks), totalSum(0.0), learningRate(LearningRate) {};
-	Neuron(std::vector<Neuron *>& neuronsLinkTo, Function* _function);
+	Neuron();
+	Neuron(Function *_function);
+	Neuron(std::vector<NeuralLink*>& _outputs, Function* _function);
+	Neuron(std::vector<Neuron *>& _outputs, Function* _function);
 	virtual ~Neuron();
 
-	virtual std::vector<NeuralLink*>&	GetInputLinks()		{ return inputs; }
-	virtual std::vector<NeuralLink*>&	GetOutputLinks()	{ return outputs; }
-	virtual NeuralLink*	at(const int& indexOfNeuralLink)	{ return outputs[indexOfNeuralLink]; }
+	virtual std::vector<NeuralLink*>& GetInputLinks();
+	virtual std::vector<NeuralLink*>& GetOutputLinks();
+	virtual NeuralLink* at(const int& indexOfNeuralLink);
 
-	virtual void SetInputLink(NeuralLink* newNeuralLink)	{ inputs.push_back(newNeuralLink); }
-	virtual void SetOutputLink(NeuralLink* newNeuralLink)	{ outputs.push_back(newNeuralLink); }
+	virtual void SetInputLink(NeuralLink* newNeuralLink);
+	virtual void SetOutputLink(NeuralLink* newNeuralLink);
 
-	virtual void	Input(double inputData)					{ totalSum += inputData; };
-	virtual double	Activation();
-	virtual int		GetNumOfOutputLinks()					{ return outputs.size(); }
-	virtual double	GetTotalSum()							{ return totalSum; }
-	virtual void	ResetTotalSum()							{ totalSum = 0.0; }
-	virtual double	Process()								{ return function->Process(totalSum); }
-	virtual double	Process(double x)						{ return function->Process(x); }
-	virtual double	Derivative()							{ return function->Derivative(totalSum); }
+	virtual void Input(double inputData);
+	virtual double Activation();
+	virtual int GetNumOfOutputLinks();
+	virtual double GetTotalSum();
+	virtual void ResetTotalSum();
+	virtual double Process();
+	virtual double Process(double x);
+	virtual double Derivative();
 
-	virtual double	TrainNeuron(double target)				{ return 0; }
-	virtual void	WeightsUpdate()							{ };
-	virtual double	CalculateLearningRate(double target)	{ return 0.007; }
-	virtual void	ShakeWeights()							{ };
-	virtual void	GetStatus();
-	virtual double	GetLearningRate()						{ return learningRate; }
+	virtual double TrainNeuron(double target);
+	virtual void WeightsUpdate();
+	virtual double CalculateLearningRate(double target);
+	virtual void ShakeWeights();
+	virtual void GetStatus();
+	virtual double GetLearningRate();
 };
 
 
